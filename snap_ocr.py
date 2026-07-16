@@ -61,7 +61,7 @@ def format_output(raw_text):
 
     out = "【OCR 提取文字】\n"
     out += "\n".join(clean)
-    out += "\n\n（Ash：读完写弹幕到 danmaku.txt）"
+    out += "\n\n（写完弹幕到 danmaku.txt）"
     return out
 
 

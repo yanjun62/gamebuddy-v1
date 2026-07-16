@@ -91,7 +91,7 @@ DEFAULT_VISION_PROMPT = """你正在看一个文字RPG游戏（极乐迪斯科�
 3. 如果有选项，列出所有选项编号和文字
 4. 画面情绪/氛围
 
-简洁但不要遗漏。Ash（Kate的AI恋人）会读这段描述来写弹幕吐槽。"""
+简洁但不要遗漏。这段描述将用于生成实时弹幕吐槽。"""
 
 
 def describe_screen(client, model, image_b64, game_prompt=""):

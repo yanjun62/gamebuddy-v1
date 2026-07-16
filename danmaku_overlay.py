@@ -32,7 +32,7 @@ class ChatOverlay:
         self.last_message = ""
 
         self.root = tk.Tk()
-        self.root.title("Ash")
+        self.root.title("Game Buddy")
         self.root.attributes('-topmost', True)
         self.root.attributes('-alpha', alpha)
         self.root.configure(bg='#0d0d0d')
@@ -105,13 +105,13 @@ class ChatOverlay:
         self.history.pack(fill='both', expand=True, side='top')
 
         # 配置标签样式
-        self.history.tag_config('ash', foreground='#a8d8ea', font=('Microsoft YaHei', font_size, 'bold'))
-        self.history.tag_config('kate', foreground='#f0c0c0', font=('Microsoft YaHei', font_size))
+        self.history.tag_config('buddy', foreground='#a8d8ea', font=('Microsoft YaHei', font_size, 'bold'))
+        self.history.tag_config('player', foreground='#f0c0c0', font=('Microsoft YaHei', font_size))
         self.history.tag_config('system', foreground='#888888', font=('Microsoft YaHei', font_size - 1))
         self.history.tag_config('timestamp', foreground='#555555', font=('Microsoft YaHei', 9))
 
         # 初始内容
-        self._append("🐾 Ash 在看你玩。打字聊天，右键关闭。\n", 'system')
+        self._append("🐾 Game Buddy 已就绪。打字聊天，右键关闭。\n", 'system')
 
         # 加载历史
         self._load_history()
@@ -137,10 +137,10 @@ class ChatOverlay:
             try:
                 lines = HISTORY_FILE.read_text(encoding='utf-8').strip().split('\n')
                 for line in lines[-50:]:  # 最近50条
-                    if line.startswith('[Ash]'):
-                        self._append(line[5:] + '\n', 'ash')
-                    elif line.startswith('[Kate]'):
-                        self._append(line[6:] + '\n', 'kate')
+                    if line.startswith('[Buddy]'):
+                        self._append(line[7:] + '\n', 'buddy')
+                    elif line.startswith('[Player]'):
+                        self._append(line[8:] + '\n', 'player')
                     elif line.startswith('[系统]'):
                         self._append(line[4:] + '\n', 'system')
             except:
@@ -164,10 +164,10 @@ class ChatOverlay:
         self.entry.delete(0, 'end')
 
         # 显示自己的消息
-        self._append(f'{text}\n', 'kate')
-        self._save_to_history('Kate', text)
+        self._append(f'{text}\n', 'player')
+        self._save_to_history('Player', text)
 
-        # 写入 message.txt 给 Ash 读
+        # 写入 message.txt 给 AI 读
         MESSAGE_FILE.write_text(text, encoding='utf-8')
 
     def _on_close(self):
@@ -178,15 +178,15 @@ class ChatOverlay:
         if not self._running:
             return
 
-        # 检查 danmaku.txt（Ash 回复）
+        # 检查 danmaku.txt（AI 回复）
         try:
             if DANMAKU_FILE.exists():
                 content = DANMAKU_FILE.read_text(encoding='utf-8').strip()
                 if content and content != self.last_danmaku:
                     self.last_danmaku = content
                     # 延迟写入历史，避免卡UI
-                    self.root.after(200, lambda c=content: self._save_to_history('Ash', c))
-                    self._append(f'{content}\n', 'ash')
+                    self.root.after(200, lambda c=content: self._save_to_history('Buddy', c))
+                    self._append(f'{content}\n', 'buddy')
         except:
             pass
 

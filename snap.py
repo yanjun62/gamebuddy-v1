@@ -57,7 +57,7 @@ def main():
 2. 角色和台词（引述关键对话）
 3. 可选选项的文字
 4. 氛围情绪
-简洁，200字以内。Ash（Kate的AI恋人）会读这段来写弹幕。"""
+简洁，200字以内。这段描述将用于生成实时弹幕。"""
 
     if game_prompt:
         prompt = game_prompt + "\n\n---\n以下为通用要求：\n" + DEFAULT_PROMPT
