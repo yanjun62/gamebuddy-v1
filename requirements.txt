@@ -1,0 +1,5 @@
+openai
+mss
+numpy
+sounddevice
+pygetwindow; sys_platform == "win32"

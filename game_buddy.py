@@ -295,13 +295,17 @@ class DanmakuOverlay:
             self.label.config(text="")
             self.current_text = ""
 
-        # 检查文件更新
+        # 检查文件更新：读出所有行后清空（追加+消费模式）
         try:
-            if DANMAKU_FILE.exists():
-                content = DANMAKU_FILE.read_text(encoding='utf-8').strip()
-                if content and content != self.current_text:
-                    self.update_text(content)
-        except:
+            if DANMAKU_FILE.exists() and DANMAKU_FILE.stat().st_size > 0:
+                with open(DANMAKU_FILE, 'r+', encoding='utf-8') as f:
+                    content = f.read()
+                    f.seek(0)
+                    f.truncate()
+                lines = [l.strip() for l in content.splitlines() if l.strip()]
+                if lines:
+                    self.update_text("\n".join(lines))
+        except OSError:
             pass
 
         self.root.after(500, self._tick)
@@ -376,7 +380,9 @@ def main():
                 danmaku = danmaku_gen.generate(desc)
                 if danmaku:
                     print(f"   💬 {danmaku}")
-                    DANMAKU_FILE.write_text(danmaku, encoding='utf-8')
+                    # 追加写入，悬浮窗读取后清空；连发多条也不会丢
+                    with open(DANMAKU_FILE, 'a', encoding='utf-8') as f:
+                        f.write(danmaku + "\n")
 
                 time.sleep(cfg['capture_interval'])
 

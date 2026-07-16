@@ -166,9 +166,11 @@ def main():
             if check_input():
                 paused = not paused
                 # 清空输入缓冲，防止 Enter 残留字符导致连续触发
-                import msvcrt
-                while msvcrt.kbhit():
-                    msvcrt.getch()
+                import sys
+                if sys.platform == 'win32':
+                    import msvcrt
+                    while msvcrt.kbhit():
+                        msvcrt.getch()
                 if paused:
                     print("[Paused]  已暂停。按回车继续截图。")
                 else:

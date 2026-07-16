@@ -3,6 +3,13 @@
   "vision_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
   "vision_model": "qwen3.5-omni-plus",
   "_comment": "阿里云百炼 DashScope。qwen3.5-omni-plus 全模态，支持图片输入。复制为 config.json 并填入你的 API key。",
+
+  "stt_api_key": "YOUR_SILICONFLOW_API_KEY",
+  "stt_base_url": "https://api.siliconflow.cn/v1",
+  "stt_model": "FunAudioLLM/SenseVoiceSmall",
+  "voice_auto_send": false,
+  "_comment_stt": "语音转文字（悬浮窗🎤按钮/F2）。任何 OpenAI 兼容的 audio/transcriptions 接口都行，硅基流动 SenseVoiceSmall 便宜好用。不填 stt_api_key 时会复用 vision_api_key。voice_auto_send=true 则识别完直接发送，false 则先填入输入框让你确认。",
+
   "capture_interval": 10,
   "display_duration": 6,
   "overlay_position": "tr",
