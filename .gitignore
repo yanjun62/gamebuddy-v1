@@ -1,0 +1,10 @@
+config.json
+chat_history.txt
+danmaku.txt
+description.txt
+message.txt
+nsfw_ids.json
+nsfw_report.txt
+fic_ids.json
+__pycache__/
+*.pyc

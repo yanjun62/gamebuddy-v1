@@ -1,0 +1,12 @@
+{
+  "vision_api_key": "YOUR_DASHSCOPE_API_KEY",
+  "vision_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "vision_model": "qwen3.5-omni-plus",
+  "_comment": "阿里云百炼 DashScope。qwen3.5-omni-plus 全模态，支持图片输入。复制为 config.json 并填入你的 API key。",
+  "capture_interval": 10,
+  "display_duration": 6,
+  "overlay_position": "tr",
+  "overlay_font_size": 16,
+  "overlay_alpha": 0.82,
+  "game_window_title": ""
+}
