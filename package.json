@@ -1,0 +1,12 @@
+{
+  "name": "gamebuddy-local-bridge",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Dependency-free local Codex app-server bridge for Game Buddy",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "node --check direct_codex_bridge.js"
+  }
+}

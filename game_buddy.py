@@ -7,14 +7,11 @@ Usage: python game_buddy.py
 
 import time
 import json
-import base64
 import threading
 import tkinter as tk
 from pathlib import Path
-from io import BytesIO
 from openai import OpenAI
-import mss
-import mss.tools
+from screen_capture import capture_region, find_game_window as find_configured_window, image_as_base64
 
 # ====== CONFIG ======
 CONFIG_DIR = Path(__file__).parent
@@ -32,7 +29,7 @@ DEFAULT_CONFIG = {
     "overlay_position": "tr",     # 悬浮窗位置: tl/tr/bl/br
     "overlay_font_size": 16,
     "overlay_alpha": 0.82,
-    "game_window_title": "",      # 留空=全屏截图
+    "game_window_title": "",      # 必填；留空时不截图，避免捕获桌面隐私
 }
 
 # ====== GAME BUDDY 人格 (弹幕语气) ======
@@ -83,7 +80,7 @@ def load_config():
 
 
 def load_or_key(cfg):
-    """从多个来源获取 OR API key"""
+    """只从显式项目配置或环境变量获取 OR API key。"""
     # 1. config.json
     if cfg.get("or_api_key") and "YOUR_" not in cfg["or_api_key"]:
         return cfg["or_api_key"]
@@ -92,16 +89,6 @@ def load_or_key(cfg):
     env_key = os.environ.get("OPENROUTER_API_KEY", "")
     if env_key:
         return env_key
-    # 3. settings.openrouter.json
-    settings_path = Path.home() / ".claude" / "settings.openrouter.json"
-    if settings_path.exists():
-        try:
-            s = json.loads(settings_path.read_text())
-            token = s.get("env", {}).get("ANTHROPIC_AUTH_TOKEN", "")
-            if token and "YOUR_" not in token and "sk-" in token:
-                return token
-        except:
-            pass
     return None
 
 
@@ -185,45 +172,15 @@ class DanmakuGenerator:
 
 # ====== SCREENSHOT ======
 def find_game_window(title_hint=""):
-    """尝试找到游戏窗口"""
-    try:
-        import pygetwindow as gw
-        # 常见游戏窗口名
-        hints = ["Disco", "极乐", "Elysium", "Steam", "薄樱鬼", "Hakuoki"]
-        if title_hint:
-            hints.insert(0, title_hint)
-
-        for hint in hints:
-            windows = gw.getWindowsWithTitle(hint)
-            if windows:
-                w = windows[0]
-                # 忽略最小化的窗口
-                if w.width > 100 and w.height > 100:
-                    return {
-                        "left": w.left,
-                        "top": w.top,
-                        "width": w.width,
-                        "height": w.height
-                    }
-        return None
-    except ImportError:
-        return None
-    except Exception:
-        return None
+    """只查找明确配置的游戏窗口。"""
+    return find_configured_window(title_hint)
 
 
 def capture_screen(region=None):
-    """截屏，返回 base64"""
-    with mss.mss() as sct:
-        if region:
-            monitor = region
-        else:
-            monitor = sct.monitors[1]  # 主显示器
-
-        img = sct.grab(monitor)
-        # 转PNG → base64
-        png = mss.tools.to_png(img.rgb, img.size)
-        return base64.b64encode(png).decode('utf-8')
+    """截取明确的窗口区域；不允许退回整个屏幕。"""
+    if region is None:
+        raise RuntimeError("未找到目标游戏窗口；为保护隐私，已跳过截图")
+    return image_as_base64(capture_region(region), image_format="PNG")
 
 
 # ====== OVERLAY ======
@@ -301,7 +258,7 @@ class DanmakuOverlay:
                 content = DANMAKU_FILE.read_text(encoding='utf-8').strip()
                 if content and content != self.current_text:
                     self.update_text(content)
-        except:
+        except OSError:
             pass
 
         self.root.after(500, self._tick)
@@ -353,6 +310,10 @@ def main():
 
                 # 尝试找游戏窗口
                 region = find_game_window(cfg.get('game_window_title', ''))
+                if region is None:
+                    print("\n⚠️ 未找到目标游戏窗口；已跳过截图，不会捕获主屏幕")
+                    time.sleep(cfg['capture_interval'])
+                    continue
 
                 # 截图
                 img_b64 = capture_screen(region)

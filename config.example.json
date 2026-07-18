@@ -1,12 +1,46 @@
 {
+  "current_game": "ac-syndicate",
+  "game_window_title": "<游戏窗口标题的一部分>",
+  "capture_mode": "local_snapshot",
+  "capture_interval": 10,
+  "capture_history_size": 6,
+  "heartbeat_frame_count": 3,
+  "capture_max_edge": 1920,
+  "capture_jpeg_quality": 82,
+
+  "overlay_position": "tr",
+  "overlay_font_size": 14,
+  "overlay_alpha": 0.86,
+  "display_duration": 6,
+
+  "voice_input_device": "<麦克风名称或名称片段，可留空>",
+  "voice_record_seconds": 5,
+  "voice_sample_rate": 16000,
+  "voice_language": "zh-CN",
+  "voice_model": "base",
+  "voice_model_download_root": "models",
+  "voice_compute_device": "cpu",
+  "voice_compute_type": "int8",
+
+  "direct_codex_enabled": false,
+  "direct_codex_endpoint": "ws://127.0.0.1:8766",
+  "direct_codex_thread_id": "<专用 Codex 任务 ID；留空则新建并保存在本地状态中>",
+  "direct_codex_workspace": "<项目绝对路径；留空则使用本目录>",
+  "direct_codex_home": "<自己的 CODEX_HOME；通常可留空>",
+  "direct_codex_executable": "codex",
+  "node_executable": "<Node.js 22+ 路径；在 PATH 中时可留空>",
+  "direct_codex_spawn_server": true,
+  "direct_codex_read_only": true,
+  "direct_codex_poll_interval_ms": 500,
+  "direct_codex_request_timeout_ms": 30000,
+  "direct_codex_reconnect_grace_ms": 90000,
+  "direct_codex_screenshot_max_age_seconds": 15,
+  "direct_codex_prompt_prefix": "你正在作为 Game Buddy 陪玩家聊天。请结合已有上下文和可选游戏截图，用简短自然的中文直接回复；不要执行工具或修改文件。",
+
+  "heartbeat_include_messages": true,
+
   "vision_api_key": "YOUR_DASHSCOPE_API_KEY",
   "vision_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
   "vision_model": "qwen3.5-omni-plus",
-  "_comment": "阿里云百炼 DashScope。qwen3.5-omni-plus 全模态，支持图片输入。复制为 config.json 并填入你的 API key。",
-  "capture_interval": 10,
-  "display_duration": 6,
-  "overlay_position": "tr",
-  "overlay_font_size": 16,
-  "overlay_alpha": 0.82,
-  "game_window_title": ""
+  "_comment": "默认 local_snapshot 不调用视觉 API。只有改为 remote_vision 才需要 vision_api_key。不要提交 config.json。"
 }

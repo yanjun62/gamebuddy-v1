@@ -7,27 +7,12 @@ Usage: python snap.py
 
 import time
 import json
-import base64
 from pathlib import Path
 from openai import OpenAI
-import mss
-import mss.tools
+from screen_capture import capture_region, find_game_window as find_configured_window, image_as_base64
 
 CONFIG_DIR = Path(__file__).parent
 DESC_FILE = CONFIG_DIR / "description.txt"
-
-
-def find_game_window():
-    try:
-        import pygetwindow as gw
-        for hint in ["Disco", "极乐", "Elysium", "Hakuoki", "薄樱鬼"]:
-            for w in gw.getWindowsWithTitle(hint):
-                if w.width > 100 and w.height > 100:
-                    return {"left": w.left, "top": w.top,
-                            "width": w.width, "height": w.height}
-    except:
-        pass
-    return None
 
 
 def main():
@@ -38,6 +23,10 @@ def main():
     )
     model = cfg.get("vision_model", "qwen3.5-omni-plus")
     interval = cfg.get("capture_interval", 5)
+    title = str(cfg.get("game_window_title", "")).strip()
+    if not title:
+        print("❌ 请先设置 game_window_title；未截图，以免捕获桌面隐私")
+        return
 
     print(f"🎮 Auto-snap 启动（每{interval}秒）→ {DESC_FILE}")
     print("   Ctrl+C 退出\n")
@@ -70,12 +59,12 @@ def main():
     try:
         while True:
             frame += 1
-            region = find_game_window()
-
-            with mss.mss() as sct:
-                monitor = region if region else sct.monitors[1]
-                img = sct.grab(monitor)
-                img_b64 = base64.b64encode(mss.tools.to_png(img.rgb, img.size)).decode('utf-8')
+            region = find_configured_window(title)
+            if region is None:
+                print("⚠️ 未找到目标游戏窗口；跳过截图")
+                time.sleep(interval)
+                continue
+            img_b64 = image_as_base64(capture_region(region), image_format="PNG")
 
             resp = client.chat.completions.create(
                 model=model,

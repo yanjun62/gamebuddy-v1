@@ -10,32 +10,19 @@ Usage: python snap_ocr.py          # 截一张OCR
 import time
 import sys
 from pathlib import Path
-import mss
-import mss.tools
 import numpy as np
+import json
+from screen_capture import capture_region, find_game_window as find_configured_window
 
 CONFIG_DIR = Path(__file__).parent
 DESC_FILE = CONFIG_DIR / "description.txt"
 
 
-def find_game_window():
-    try:
-        import pygetwindow as gw
-        for hint in ["Disco", "极乐", "Elysium", "Hakuoki", "薄樱鬼"]:
-            for w in gw.getWindowsWithTitle(hint):
-                if w.width > 100 and w.height > 100:
-                    return {"left": w.left, "top": w.top,
-                            "width": w.width, "height": w.height}
-    except:
-        pass
-    return None
-
-
 def capture_screen(region=None):
-    with mss.mss() as sct:
-        monitor = region if region else sct.monitors[1]
-        img = sct.grab(monitor)
-        return np.array(img), img
+    if region is None:
+        raise RuntimeError("未找到目标游戏窗口；为保护隐私，已跳过截图")
+    image = capture_region(region)
+    return np.array(image), image
 
 
 def ocr_text(image_array, reader):
@@ -67,6 +54,15 @@ def format_output(raw_text):
 
 def main():
     print("🔍 Snap OCR 启动中...")
+    try:
+        cfg = json.loads((CONFIG_DIR / "config.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"   ❌ 无法读取 config.json: {exc}")
+        return
+    title = str(cfg.get("game_window_title", "")).strip()
+    if not title:
+        print("   ❌ 请先设置 game_window_title；未截图，以免捕获桌面隐私")
+        return
 
     # 加载 easyocr（第一次会下载模型）
     try:
@@ -79,7 +75,10 @@ def main():
         return
 
     auto = "--auto" in sys.argv
-    region = find_game_window()
+    region = find_configured_window(title)
+    if region is None:
+        print("   ❌ 未找到目标游戏窗口；已跳过截图")
+        return
     if region:
         print(f"🎯 窗口: {region['width']}x{region['height']}\n")
 
@@ -106,6 +105,11 @@ def main():
     try:
         while True:
             frame += 1
+            region = find_configured_window(title)
+            if region is None:
+                print("⚠️ 未找到目标游戏窗口；跳过截图")
+                time.sleep(INTERVAL)
+                continue
             arr, raw = capture_screen(region)
             text = ocr_text(arr, reader)
             output = format_output(text)
