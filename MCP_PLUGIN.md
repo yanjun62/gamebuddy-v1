@@ -3,7 +3,7 @@
 The repository contains a repo marketplace at `.agents/plugins/marketplace.json` and the installable plugin at `plugins/gamebuddy/`. Once these files are published to GitHub, Codex can import the marketplace and install the MCP without copying local configuration files.
 
 ~~~text
-codex plugin marketplace add yanjun62/gamebuddy-v1 --ref master
+codex plugin marketplace add yanjun62/gamebuddy-v2 --ref master
 codex plugin add gamebuddy@gamebuddy-open-source
 ~~~
 

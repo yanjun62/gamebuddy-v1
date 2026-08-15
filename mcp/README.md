@@ -20,7 +20,7 @@ Use the checked-in GitHub package through `npx`:
       "command": "npx",
       "args": [
         "-y",
-        "github:yanjun62/gamebuddy-v1#master"
+        "github:yanjun62/gamebuddy-v2#master"
       ]
     }
   }
@@ -36,7 +36,7 @@ This GitHub command installs only the public MCP, compact profiles, documentatio
 Install from GitHub for the current user:
 
 ~~~text
-claude mcp add --transport stdio --scope user gamebuddy -- npx -y github:yanjun62/gamebuddy-v1#master
+claude mcp add --transport stdio --scope user gamebuddy -- npx -y github:yanjun62/gamebuddy-v2#master
 ~~~
 
 Or clone the repository and keep the root `.mcp.json` as a project-scoped configuration. Claude Code asks for approval before first using a project MCP. Run `claude mcp get gamebuddy` or use `/mcp` to verify the connection.
@@ -46,14 +46,14 @@ Or clone the repository and keep the root `.mcp.json` as a project-scoped config
 Native plugin install:
 
 ~~~text
-codex plugin marketplace add yanjun62/gamebuddy-v1 --ref master
+codex plugin marketplace add yanjun62/gamebuddy-v2 --ref master
 codex plugin add gamebuddy@gamebuddy-open-source
 ~~~
 
 Standalone MCP install without the skill/plugin wrapper:
 
 ~~~text
-codex mcp add gamebuddy -- npx -y github:yanjun62/gamebuddy-v1#master
+codex mcp add gamebuddy -- npx -y github:yanjun62/gamebuddy-v2#master
 ~~~
 
 Start a new Codex task after installing the plugin.
@@ -69,13 +69,13 @@ Public game profiles and spoiler-aware worldbooks work immediately. Overlay even
 macOS or Linux:
 
 ~~~text
-export GAMEBUDDY_HOME="/path/to/gamebuddy-v1"
+export GAMEBUDDY_HOME="/path/to/gamebuddy-v2"
 ~~~
 
 Windows PowerShell:
 
 ~~~text
-$env:GAMEBUDDY_HOME = "C:\\path\\to\\gamebuddy-v1"
+$env:GAMEBUDDY_HOME = "C:\\path\\to\\gamebuddy-v2"
 ~~~
 
 The server checks only that explicit location, the client working directory, and its nearby repository folder. It never crawls the user home directory. Status results omit the resolved path.
