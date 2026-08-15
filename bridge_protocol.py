@@ -49,7 +49,8 @@ def append_message(
     legacy_path: Optional[Path] = LEGACY_MESSAGE_FILE,
     message_id: Optional[str] = None,
     created_at: Optional[str] = None,
-) -> dict[str, str]:
+    game_context: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Durably append one message and update the legacy single-message file."""
     cleaned = text.strip()
     if not cleaned:
@@ -60,6 +61,8 @@ def append_message(
         "created_at": created_at or utc_now_iso(),
         "text": cleaned,
     }
+    if game_context:
+        record["game_context"] = game_context
     payload = (json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
     queue_path = Path(queue_path)
     queue_path.parent.mkdir(parents=True, exist_ok=True)
@@ -83,12 +86,12 @@ def append_message(
     return record
 
 
-def read_messages(path: Path = MESSAGE_QUEUE_FILE) -> list[dict[str, str]]:
+def read_messages(path: Path = MESSAGE_QUEUE_FILE) -> list[dict[str, Any]]:
     """Read valid queue entries, ignoring damaged or incomplete trailing lines."""
     path = Path(path)
     if not path.exists():
         return []
-    records: list[dict[str, str]] = []
+    records: list[dict[str, Any]] = []
     for raw_line in path.read_text(encoding="utf-8", errors="replace").splitlines():
         if not raw_line.strip():
             continue
@@ -101,13 +104,14 @@ def read_messages(path: Path = MESSAGE_QUEUE_FILE) -> list[dict[str, str]]:
         message_id = value.get("id")
         text = value.get("text")
         if isinstance(message_id, str) and message_id and isinstance(text, str) and text.strip():
-            records.append(
-                {
-                    "id": message_id,
-                    "created_at": str(value.get("created_at", "")),
-                    "text": text.strip(),
-                }
-            )
+            record: dict[str, Any] = {
+                "id": message_id,
+                "created_at": str(value.get("created_at", "")),
+                "text": text.strip(),
+            }
+            if isinstance(value.get("game_context"), dict):
+                record["game_context"] = value["game_context"]
+            records.append(record)
     return records
 
 

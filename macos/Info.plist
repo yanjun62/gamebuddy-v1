@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleDevelopmentRegion</key><string>zh_CN</string>
+  <key>CFBundleExecutable</key><string>GameBuddy</string>
+  <key>CFBundleIdentifier</key><string>local.gamebuddy.overlay</string>
+  <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+  <key>CFBundleName</key><string>Game Buddy</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>2.1</string>
+  <key>CFBundleVersion</key><string>1</string>
+  <key>LSMinimumSystemVersion</key><string>13.0</string>
+  <!-- 挂件身份必须写在 plist 里，不能只靠代码里 setActivationPolicy(.accessory)。
+       少了这行，LaunchServices 会按普通前台应用把它拉起来，中间那一小段身份不一致
+       会让 nonactivatingPanel 的 orderFrontRegardless 被 AppKit 重置掉 ——
+       症状是裸二进制跑有窗口、装进 .app 就没有。2026-08-11 实测。 -->
+  <key>LSUIElement</key><true/>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSMicrophoneUsageDescription</key><string>Game Buddy 使用麦克风进行本地语音转文字。</string>
+  <key>NSPrincipalClass</key><string>NSApplication</string>
+</dict>
+</plist>

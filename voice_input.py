@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from bridge_protocol import BASE_DIR
+from game_knowledge import build_whisper_prompt
 
 
 StatusCallback = Callable[[str], None]
@@ -73,6 +74,11 @@ def _language_code(value: str) -> Optional[str]:
     return value.split("-", 1)[0].casefold()
 
 
+def load_game_initial_prompt(config: dict) -> Optional[str]:
+    """Load an optional game profile and build a bounded Whisper hint."""
+    return build_whisper_prompt(config)
+
+
 def transcribe_once(config: dict, status: Optional[StatusCallback] = None) -> str:
     """Record one clip and transcribe it entirely on the local machine."""
     try:
@@ -82,6 +88,7 @@ def transcribe_once(config: dict, status: Optional[StatusCallback] = None) -> st
 
     seconds = max(1.0, min(30.0, float(config.get("voice_record_seconds", 5))))
     sample_rate = int(config.get("voice_sample_rate", 16000))
+    initial_prompt = load_game_initial_prompt(config)
     device = choose_input_device(sd, str(config.get("voice_input_device", "")))
     if device is None:
         raise RuntimeError("没有找到可用的麦克风输入设备")
@@ -121,6 +128,7 @@ def transcribe_once(config: dict, status: Optional[StatusCallback] = None) -> st
         key = (model_name, device_name, compute_type, str(model_cache_dir.resolve()))
         model = _MODELS.get(key)
         if model is None:
+            _notify(status, "首次使用需加载语音模型（约 1 分钟，之后秒开），请稍候…")
             model = WhisperModel(
                 model_name,
                 device=device_name,
@@ -129,12 +137,14 @@ def transcribe_once(config: dict, status: Optional[StatusCallback] = None) -> st
             )
             _MODELS[key] = model
 
-        segments, _ = model.transcribe(
-            str(temp_path),
-            language=_language_code(str(config.get("voice_language", "zh-CN"))),
-            vad_filter=True,
-            beam_size=5,
-        )
+        transcribe_options = {
+            "language": _language_code(str(config.get("voice_language", "zh-CN"))),
+            "vad_filter": True,
+            "beam_size": 5,
+        }
+        if initial_prompt:
+            transcribe_options["initial_prompt"] = initial_prompt
+        segments, _ = model.transcribe(str(temp_path), **transcribe_options)
         text = "".join(segment.text for segment in segments).strip()
         if not text:
             raise RuntimeError("没有识别到清晰语音，请靠近麦克风再试一次")

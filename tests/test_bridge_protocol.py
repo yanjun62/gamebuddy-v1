@@ -37,6 +37,20 @@ class BridgeProtocolTests(unittest.TestCase):
             bridge_protocol.atomic_write_json(target, {"中文": True})
             self.assertEqual({"中文": True}, json.loads(target.read_text(encoding="utf-8")))
 
+    def test_message_preserves_compact_game_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            queue = root / "queue.jsonl"
+            record = bridge_protocol.append_message(
+                "盖拉斯是谁",
+                queue_path=queue,
+                legacy_path=None,
+                message_id="context",
+                created_at="now",
+                game_context={"profile_id": "mass-effect-legendary-edition", "spoiler_mode": "safe"},
+            )
+            self.assertEqual(record, bridge_protocol.read_messages(queue)[0])
+
 
 if __name__ == "__main__":
     unittest.main()

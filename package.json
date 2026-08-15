@@ -2,11 +2,22 @@
   "name": "gamebuddy-local-bridge",
   "version": "2.0.0",
   "private": true,
-  "description": "Dependency-free local Codex app-server bridge for Game Buddy",
+  "description": "Dependency-free local Codex app-server bridge and universal MCP for Game Buddy",
   "engines": {
     "node": ">=22"
   },
+  "bin": {
+    "gamebuddy-mcp": "mcp/gamebuddy_mcp_cli.js"
+  },
+  "files": [
+    "mcp/",
+    "plugins/gamebuddy/",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ],
   "scripts": {
-    "check": "node --check direct_codex_bridge.js"
+    "check": "node --check direct_codex_bridge.js && node --check plugins/gamebuddy/scripts/gamebuddy_mcp_server.js",
+    "test:mcp": "node plugins/gamebuddy/tests/mcp_smoke_test.js"
   }
 }

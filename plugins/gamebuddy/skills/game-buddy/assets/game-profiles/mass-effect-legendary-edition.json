@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "id": "mass-effect-legendary-edition",
+  "display_name": "Mass Effect Legendary Edition — LE2 / LE3",
+  "aliases": [
+    "Mass Effect Legendary Edition",
+    "Mass Effect 2 Legendary Edition",
+    "Mass Effect 3 Legendary Edition",
+    "质量效应传奇版",
+    "质量效应2",
+    "质量效应3",
+    "MELE",
+    "LE2",
+    "LE3"
+  ],
+  "reference": "references/games/mass-effect-legendary-edition.md",
+  "credits_section": "Mass Effect Legendary Edition",
+  "stt": {
+    "language": "zh",
+    "prompt_prefix": "这是一段关于《质量效应传奇版》二代或三代的中文游戏对话，请准确识别角色、地点、种族、势力和任务名称：",
+    "terms": [
+      {
+        "canonical": "质量效应传奇版",
+        "aliases": [
+          "Mass Effect Legendary Edition",
+          "MELE",
+          "LE2",
+          "LE3"
+        ],
+        "priority": 100
+      },
+      {
+        "canonical": "薛帕德",
+        "aliases": [
+          "Shepard",
+          "Commander Shepard",
+          "薛帕德指挥官"
+        ],
+        "priority": 100
+      },
+      {
+        "canonical": "诺曼底号",
+        "aliases": [
+          "Normandy",
+          "Normandy SR-2",
+          "诺曼底SR-2"
+        ],
+        "priority": 99
+      },
+      {
+        "canonical": "盖拉斯·瓦卡里安",
+        "aliases": [
+          "Garrus Vakarian",
+          "Garrus",
+          "盖拉斯"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "塔莉'佐拉",
+        "aliases": [
+          "Tali'Zorah",
+          "Tali",
+          "塔莉"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "莉亚娜·T'苏尼",
+        "aliases": [
+          "Liara T'Soni",
+          "Liara",
+          "莉亚娜"
+        ],
+        "priority": 97
+      },
+      {
+        "canonical": "米兰达·罗森",
+        "aliases": [
+          "Miranda Lawson",
+          "Miranda",
+          "米兰达"
+        ],
+        "priority": 96
+      },
+      {
+        "canonical": "雅各布·泰勒",
+        "aliases": [
+          "Jacob Taylor",
+          "Jacob",
+          "雅各布"
+        ],
+        "priority": 93
+      },
+      {
+        "canonical": "莫丁·索罗斯",
+        "aliases": [
+          "Mordin Solus",
+          "Dr. Mordin Solus",
+          "Mordin",
+          "莫丁"
+        ],
+        "priority": 96
+      },
+      {
+        "canonical": "塞恩·克里尔斯",
+        "aliases": [
+          "Thane Krios",
+          "Thane",
+          "塞恩"
+        ],
+        "priority": 94
+      },
+      {
+        "canonical": "军团",
+        "aliases": [
+          "Legion"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "古朗特",
+        "aliases": [
+          "Grunt",
+          "Urdnot Grunt",
+          "厄德诺·古朗特"
+        ],
+        "priority": 93
+      },
+      {
+        "canonical": "萨玛拉",
+        "aliases": [
+          "Samara"
+        ],
+        "priority": 93
+      },
+      {
+        "canonical": "杰克",
+        "aliases": [
+          "Jack",
+          "Subject Zero",
+          "零号对象"
+        ],
+        "priority": 93
+      },
+      {
+        "canonical": "埃莉亚·T'洛克",
+        "aliases": [
+          "Aria T'Loak",
+          "Aria",
+          "埃莉亚"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "塞伯鲁斯",
+        "aliases": [
+          "Cerberus"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "收割者",
+        "aliases": [
+          "Reaper",
+          "Reapers"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "神堡",
+        "aliases": [
+          "Citadel"
+        ],
+        "priority": 97
+      },
+      {
+        "canonical": "欧米伽",
+        "aliases": [
+          "Omega"
+        ],
+        "priority": 92
+      },
+      {
+        "canonical": "阿莎丽人",
+        "aliases": [
+          "Asari",
+          "阿莎丽"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "克洛根",
+        "aliases": [
+          "Krogan",
+          "克洛根人"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "奎利人",
+        "aliases": [
+          "Quarian",
+          "Quarians"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "桀斯",
+        "aliases": [
+          "Geth"
+        ],
+        "priority": 92
+      },
+      {
+        "canonical": "质量中继器",
+        "aliases": [
+          "Mass Relay",
+          "Mass Relays"
+        ],
+        "priority": 92
+      },
+      {
+        "canonical": "幽灵特工",
+        "aliases": [
+          "Spectre",
+          "Spectres"
+        ],
+        "priority": 90
+      },
+      {
+        "canonical": "楷模",
+        "aliases": [
+          "Paragon"
+        ],
+        "priority": 89
+      },
+      {
+        "canonical": "叛逆",
+        "aliases": [
+          "Renegade"
+        ],
+        "priority": 89
+      }
+    ]
+  }
+}

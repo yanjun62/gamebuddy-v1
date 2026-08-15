@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "example-game",
+  "display_name": "Example Game",
+  "aliases": [
+    "Example Game",
+    "本地化标题",
+    "EG"
+  ],
+  "reference": "references/games/example-game.md",
+  "stt": {
+    "language": "zh",
+    "prompt_prefix": "这是一段关于《Example Game》的中文游戏对话，请准确识别角色、地点、势力、技能和任务名称：",
+    "terms": [
+      {
+        "canonical": "角色标准名称",
+        "aliases": [
+          "English Name",
+          "常见译名",
+          "容易被识别错的同音写法"
+        ],
+        "priority": 100
+      }
+    ]
+  }
+}

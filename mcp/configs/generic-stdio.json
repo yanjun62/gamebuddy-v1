@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gamebuddy": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:yanjun62/gamebuddy-v1#master"
+      ]
+    }
+  }
+}

@@ -5,13 +5,26 @@
   "capture_interval": 10,
   "capture_history_size": 6,
   "heartbeat_frame_count": 3,
+  "heartbeat_screenshot_min_interval_seconds": 60,
   "capture_max_edge": 1920,
   "capture_jpeg_quality": 82,
+  "capture_on_message": true,
+  "capture_on_message_timeout_ms": 5000,
+  "capture_python_executable": "",
 
   "overlay_position": "tr",
   "overlay_font_size": 14,
   "overlay_alpha": 0.86,
+  "overlay_theme": "dopamine-sunset",
+  "player_name": "我",
+  "buddy_name": "陪玩",
   "display_duration": 6,
+
+  "game_profile": "",
+  "game_profile_root": "",
+  "knowledge_enabled": true,
+  "knowledge_context_term_limit": 20,
+  "spoiler_mode": "safe",
 
   "voice_input_device": "<麦克风名称或名称片段，可留空>",
   "voice_record_seconds": 5,
@@ -21,6 +34,10 @@
   "voice_model_download_root": "models",
   "voice_compute_device": "cpu",
   "voice_compute_type": "int8",
+  "voice_game_profile": "",
+  "voice_game_profile_root": "",
+  "voice_game_prompt_max_chars": 700,
+  "voice_initial_prompt": "",
 
   "direct_codex_enabled": false,
   "direct_codex_endpoint": "ws://127.0.0.1:8766",
@@ -35,7 +52,7 @@
   "direct_codex_request_timeout_ms": 30000,
   "direct_codex_reconnect_grace_ms": 90000,
   "direct_codex_screenshot_max_age_seconds": 15,
-  "direct_codex_prompt_prefix": "你正在作为 Game Buddy 陪玩家聊天。请结合已有上下文和可选游戏截图，用简短自然的中文直接回复；不要执行工具或修改文件。",
+  "direct_codex_prompt_prefix": "这是由 Game Buddy 转发的玩家消息。请保持当前任务中已有的人格、称呼、语气、关系设定与表达习惯；Game Buddy 只提供游戏上下文和剧透边界，不创建或替换人格。如果当前代理已经加载人格或项目指令文件（例如 Claude Code 的 CLAUDE.md、Codex 的 AGENTS.md），请继续遵守；无需仅因本提示而查找这些文件。回复应适合悬浮气泡阅读，但用户已有的交流风格优先。只可按需读取所选本地词库，不得修改文件或执行其他操作。",
 
   "heartbeat_include_messages": true,
 

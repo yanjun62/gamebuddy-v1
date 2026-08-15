@@ -1,0 +1,20 @@
+{
+  "name": "gamebuddy-open-source",
+  "interface": {
+    "displayName": "Game Buddy Open Source"
+  },
+  "plugins": [
+    {
+      "name": "gamebuddy",
+      "source": {
+        "source": "local",
+        "path": "./plugins/gamebuddy"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

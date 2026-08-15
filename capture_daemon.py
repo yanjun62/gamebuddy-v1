@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 from bridge_protocol import atomic_write_text
+from game_knowledge import core_term_hint
 from screen_capture import capture_region, find_game_window, image_as_base64, resize_image, save_jpeg_atomic
 
 
@@ -45,8 +46,11 @@ def load_vision_prompt(config: dict) -> str:
         if prompt_file.exists():
             custom = prompt_file.read_text(encoding="utf-8").strip()
             if custom:
-                return f"{custom}\n\n---\n以下为通用要求：\n{DEFAULT_VISION_PROMPT}"
-    return DEFAULT_VISION_PROMPT
+                prompt = f"{custom}\n\n---\n以下为通用要求：\n{DEFAULT_VISION_PROMPT}"
+                hint = core_term_hint(config)
+                return f"{prompt}\n\n当前游戏核心术语：{hint}" if hint else prompt
+    hint = core_term_hint(config)
+    return f"{DEFAULT_VISION_PROMPT}\n\n当前游戏核心术语：{hint}" if hint else DEFAULT_VISION_PROMPT
 
 
 def get_api_client(config: dict):

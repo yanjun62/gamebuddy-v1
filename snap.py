@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 from openai import OpenAI
 from screen_capture import capture_region, find_game_window as find_configured_window, image_as_base64
+from game_knowledge import core_term_hint
 
 CONFIG_DIR = Path(__file__).parent
 DESC_FILE = CONFIG_DIR / "description.txt"
@@ -52,6 +53,9 @@ def main():
         prompt = game_prompt + "\n\n---\n以下为通用要求：\n" + DEFAULT_PROMPT
     else:
         prompt = DEFAULT_PROMPT
+    term_hint = core_term_hint(cfg)
+    if term_hint:
+        prompt += "\n\n当前游戏核心术语：" + term_hint
 
     last_desc = ""
     frame = 0
