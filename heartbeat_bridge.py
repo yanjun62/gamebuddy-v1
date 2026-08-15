@@ -8,6 +8,7 @@ import json
 import secrets
 import shutil
 import sys
+import time
 from pathlib import Path
 from typing import List, Optional
 
@@ -21,6 +22,7 @@ from bridge_protocol import (
     read_messages,
     utc_now_iso,
 )
+from game_knowledge import build_game_context
 
 
 CONFIG_FILE = BASE_DIR / "config.json"
@@ -43,6 +45,7 @@ def load_state() -> dict:
             "processed_message_ids": [],
             "last_description_mtime_ns": 0,
             "last_frame_sha256": "",
+            "last_screenshot_event_at_unix": 0,
             "pending": None,
         },
     )
@@ -134,9 +137,24 @@ def poll() -> dict:
         newest_frame_sha256
         and newest_frame_sha256 != state.get("last_frame_sha256", "")
     )
-    should_attach_frames = bool(recent_frames and (frame_changed or messages))
+    now_unix = time.time()
+    screenshot_min_interval = max(
+        0.0,
+        float(cfg.get("heartbeat_screenshot_min_interval_seconds", 60)),
+    )
+    try:
+        last_screenshot_event = float(state.get("last_screenshot_event_at_unix", 0) or 0)
+    except (TypeError, ValueError):
+        last_screenshot_event = 0.0
+    screenshot_due = bool(
+        frame_changed
+        and now_unix - last_screenshot_event >= screenshot_min_interval
+    )
+    should_attach_frames = bool(
+        recent_frames and (messages or description is not None or screenshot_due)
+    )
 
-    if not messages and description is None and not frame_changed:
+    if not messages and description is None and not screenshot_due:
         return {"status": "idle"}
 
     token = secrets.token_urlsafe(24)
@@ -155,6 +173,16 @@ def poll() -> dict:
         "frame_path": frame_paths[-1] if frame_paths else None,
         "frame_sha256": newest_frame_sha256,
         "frame_changed": frame_changed,
+        "screenshot_event_at_unix": now_unix if should_attach_frames else None,
+        "game_context": build_game_context(
+            cfg,
+            "\n".join(
+                [
+                    *(str(item.get("text", "")) for item in messages),
+                    description or "",
+                ]
+            ).strip(),
+        ),
     }
     state["pending"] = event
     atomic_write_json(STATE_FILE, state)
@@ -183,6 +211,10 @@ def commit(token: str, reply: Optional[str], silent: bool) -> dict:
         state["last_description_mtime_ns"] = pending["description_mtime_ns"]
     if pending.get("frame_sha256"):
         state["last_frame_sha256"] = pending["frame_sha256"]
+    if pending.get("frame_paths"):
+        state["last_screenshot_event_at_unix"] = float(
+            pending.get("screenshot_event_at_unix") or time.time()
+        )
     state["pending"] = None
     state["last_commit_at"] = utc_now_iso()
     atomic_write_json(STATE_FILE, state)

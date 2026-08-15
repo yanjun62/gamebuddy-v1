@@ -24,3 +24,11 @@ __pycache__/
 .venv/
 models/
 node_modules/
+.local-bin/
+.gamebuddy-build/
+
+*.codex-bak
+
+# Local-only enhanced guides and localization-derived glossaries
+skill-package/
+disco-video-analysis/

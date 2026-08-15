@@ -1,0 +1,7 @@
+interface:
+  display_name: "Game Buddy"
+  short_description: "加载攻略、世界书、剧透边界与按需查询的本地化词表"
+  default_prompt: "Use $game-buddy to load the active game's worldbook and give spoiler-safe gameplay guidance."
+
+policy:
+  allow_implicit_invocation: true

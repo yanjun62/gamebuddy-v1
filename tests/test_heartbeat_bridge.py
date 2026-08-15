@@ -118,6 +118,55 @@ class HeartbeatBridgeTests(unittest.TestCase):
                 for patcher in reversed(patchers):
                     patcher.stop()
 
+    def test_screenshot_throttle_never_delays_player_messages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            files = {
+                "CONFIG_FILE": root / "config.json",
+                "STATE_FILE": root / "state.json",
+                "DESCRIPTION_FILE": root / "description.txt",
+                "FRAME_FILE": root / "frame.jpg",
+                "FRAME_HISTORY_DIR": root / "frame_history",
+                "FRAME_BATCH_DIR": root / "heartbeat_frames",
+                "MESSAGE_QUEUE_FILE": root / "queue.jsonl",
+                "DANMAKU_FILE": root / "danmaku.txt",
+            }
+            files["CONFIG_FILE"].write_text(
+                '{"heartbeat_screenshot_min_interval_seconds": 60}', encoding="utf-8"
+            )
+            files["FRAME_FILE"].write_bytes(b"new-frame")
+            files["STATE_FILE"].write_text(
+                json.dumps(
+                    {
+                        "processed_message_ids": [],
+                        "last_description_mtime_ns": 0,
+                        "last_frame_sha256": "old-frame",
+                        "last_screenshot_event_at_unix": 100,
+                        "pending": None,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            patchers = [patch.object(heartbeat_bridge, name, value) for name, value in files.items()]
+            patchers.append(patch.object(heartbeat_bridge.time, "time", return_value=120))
+            for patcher in patchers:
+                patcher.start()
+            try:
+                self.assertEqual("idle", heartbeat_bridge.poll()["status"])
+
+                files["MESSAGE_QUEUE_FILE"].write_text(
+                    '{"id":"urgent","created_at":"now","text":"选哪个"}\n',
+                    encoding="utf-8",
+                )
+                event = heartbeat_bridge.poll()
+                self.assertEqual("pending", event["status"])
+                self.assertEqual("urgent", event["messages"][0]["id"])
+                self.assertEqual(1, len(event["frame_paths"]))
+            finally:
+                for patcher in reversed(patchers):
+                    patcher.stop()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,556 @@
+{
+  "schema_version": 1,
+  "id": "disco-elysium",
+  "display_name": "Disco Elysium — The Final Cut",
+  "aliases": [
+    "Disco Elysium",
+    "Disco Elysium The Final Cut",
+    "极乐迪斯科",
+    "极乐迪斯科最终剪辑版",
+    "极乐",
+    "DE"
+  ],
+  "reference": "references/games/disco-elysium.md",
+  "credits_section": "Disco Elysium",
+  "stt": {
+    "language": "zh",
+    "prompt_prefix": "这是一段关于《极乐迪斯科》的中文游戏陪玩对话，请准确识别角色、地点、势力、技能、机制和任务名称：",
+    "terms": [
+      {
+        "canonical": "极乐迪斯科",
+        "aliases": [
+          "Disco Elysium",
+          "DE",
+          "最终剪辑版",
+          "The Final Cut"
+        ],
+        "priority": 100
+      },
+      {
+        "canonical": "哈里",
+        "aliases": [
+          "Harry",
+          "主角",
+          "警探"
+        ],
+        "priority": 100
+      },
+      {
+        "canonical": "金·曷城",
+        "aliases": [
+          "Kim Kitsuragi",
+          "金警督",
+          "金",
+          "Kim"
+        ],
+        "priority": 100
+      },
+      {
+        "canonical": "瑞瓦肖",
+        "aliases": [
+          "Revachol"
+        ],
+        "priority": 99
+      },
+      {
+        "canonical": "马丁内斯",
+        "aliases": [
+          "Martinaise",
+          "北加姆洛克"
+        ],
+        "priority": 99
+      },
+      {
+        "canonical": "瑞瓦肖公民武装",
+        "aliases": [
+          "RCM",
+          "Revachol Citizens Militia"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "褴褛飞旋",
+        "aliases": [
+          "Whirling-in-Rags",
+          "褴褛飞旋旅社",
+          "旅社"
+        ],
+        "priority": 98
+      },
+      {
+        "canonical": "加尔特",
+        "aliases": [
+          "Garte",
+          "旅店经理"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "坤诺",
+        "aliases": [
+          "Cuno",
+          "库诺"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "卡拉洁",
+        "aliases": [
+          "Klaasje",
+          "Klaasje Amandou"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "艾弗拉特·克莱尔",
+        "aliases": [
+          "Evrart Claire",
+          "艾弗拉特",
+          "克莱尔先生"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "乔伊斯·梅西耶",
+        "aliases": [
+          "Joyce Messier",
+          "乔伊斯",
+          "野松公司代表"
+        ],
+        "priority": 95
+      },
+      {
+        "canonical": "提图斯·哈迪",
+        "aliases": [
+          "Titus Hardie",
+          "提图斯",
+          "哈迪"
+        ],
+        "priority": 94
+      },
+      {
+        "canonical": "哈迪兄弟",
+        "aliases": [
+          "Hardie Boys",
+          "Hardie Boys Union"
+        ],
+        "priority": 94
+      },
+      {
+        "canonical": "露比",
+        "aliases": [
+          "Ruby"
+        ],
+        "priority": 94
+      },
+      {
+        "canonical": "测颅先生",
+        "aliases": [
+          "Measurehead"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "伊苏林迪竹节虫",
+        "aliases": [
+          "Insulindian Phasmid",
+          "竹节虫"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "莉娜",
+        "aliases": [
+          "Lena",
+          "神秘动物学家的妻子"
+        ],
+        "priority": 87
+      },
+      {
+        "canonical": "莫雷尔",
+        "aliases": [
+          "Morell",
+          "神秘动物学家"
+        ],
+        "priority": 87
+      },
+      {
+        "canonical": "苏娜",
+        "aliases": [
+          "Soona"
+        ],
+        "priority": 86
+      },
+      {
+        "canonical": "诺伊德",
+        "aliases": [
+          "Noid"
+        ],
+        "priority": 85
+      },
+      {
+        "canonical": "爱凡客",
+        "aliases": [
+          "Egg Head",
+          "蛋头"
+        ],
+        "priority": 85
+      },
+      {
+        "canonical": "阿西尔",
+        "aliases": [
+          "Acele"
+        ],
+        "priority": 85
+      },
+      {
+        "canonical": "野松公司",
+        "aliases": [
+          "Wild Pines",
+          "Wild Pines Group"
+        ],
+        "priority": 90
+      },
+      {
+        "canonical": "道德国际",
+        "aliases": [
+          "Moralintern",
+          "国际道德伦理委员会"
+        ],
+        "priority": 90
+      },
+      {
+        "canonical": "灰域",
+        "aliases": [
+          "the Pale",
+          "Pale",
+          "苍白"
+        ],
+        "priority": 92
+      },
+      {
+        "canonical": "伊苏林迪",
+        "aliases": [
+          "Insulinde",
+          "伊苏林迪洲"
+        ],
+        "priority": 89
+      },
+      {
+        "canonical": "加姆洛克",
+        "aliases": [
+          "Jamrock"
+        ],
+        "priority": 88
+      },
+      {
+        "canonical": "德洛莉丝·黛",
+        "aliases": [
+          "Dolores Dei",
+          "德洛莉丝"
+        ],
+        "priority": 88
+      },
+      {
+        "canonical": "卡拉斯·马佐夫",
+        "aliases": [
+          "Kras Mazov",
+          "马佐夫"
+        ],
+        "priority": 86
+      },
+      {
+        "canonical": "思维内阁",
+        "aliases": [
+          "Thought Cabinet",
+          "思绪内阁",
+          "思维阁"
+        ],
+        "priority": 93
+      },
+      {
+        "canonical": "逻辑思维",
+        "aliases": [
+          "Logic"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "博学多闻",
+        "aliases": [
+          "Encyclopedia"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "能说会道",
+        "aliases": [
+          "Rhetoric"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "故弄玄虚",
+        "aliases": [
+          "Drama"
+        ],
+        "priority": 81
+      },
+      {
+        "canonical": "标新立异",
+        "aliases": [
+          "Conceptualization"
+        ],
+        "priority": 81
+      },
+      {
+        "canonical": "见微知著",
+        "aliases": [
+          "Visual Calculus"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "平心定气",
+        "aliases": [
+          "Volition"
+        ],
+        "priority": 84
+      },
+      {
+        "canonical": "内陆帝国",
+        "aliases": [
+          "Inland Empire"
+        ],
+        "priority": 90
+      },
+      {
+        "canonical": "通情达理",
+        "aliases": [
+          "Empathy"
+        ],
+        "priority": 85
+      },
+      {
+        "canonical": "争强好胜",
+        "aliases": [
+          "Authority"
+        ],
+        "priority": 84
+      },
+      {
+        "canonical": "同舟共济",
+        "aliases": [
+          "Esprit de Corps"
+        ],
+        "priority": 83
+      },
+      {
+        "canonical": "循循善诱",
+        "aliases": [
+          "Suggestion"
+        ],
+        "priority": 83
+      },
+      {
+        "canonical": "钢筋铁骨",
+        "aliases": [
+          "Endurance"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "坚忍不拔",
+        "aliases": [
+          "Pain Threshold"
+        ],
+        "priority": 81
+      },
+      {
+        "canonical": "强身健体",
+        "aliases": [
+          "Physical Instrument"
+        ],
+        "priority": 83
+      },
+      {
+        "canonical": "食髓知味",
+        "aliases": [
+          "Electrochemistry"
+        ],
+        "priority": 86
+      },
+      {
+        "canonical": "天人感应",
+        "aliases": [
+          "Shivers"
+        ],
+        "priority": 89
+      },
+      {
+        "canonical": "疑神疑鬼",
+        "aliases": [
+          "Half Light"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "眼明手巧",
+        "aliases": [
+          "Hand/Eye Coordination",
+          "Hand Eye Coordination"
+        ],
+        "priority": 80
+      },
+      {
+        "canonical": "五感发达",
+        "aliases": [
+          "Perception"
+        ],
+        "priority": 88
+      },
+      {
+        "canonical": "反应速度",
+        "aliases": [
+          "Reaction Speed"
+        ],
+        "priority": 81
+      },
+      {
+        "canonical": "鬼祟玲珑",
+        "aliases": [
+          "Savoir Faire"
+        ],
+        "priority": 81
+      },
+      {
+        "canonical": "能工巧匠",
+        "aliases": [
+          "Interfacing"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "从容自若",
+        "aliases": [
+          "Composure"
+        ],
+        "priority": 82
+      },
+      {
+        "canonical": "白色检定",
+        "aliases": [
+          "White Check",
+          "可重试检定"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "红色检定",
+        "aliases": [
+          "Red Check",
+          "一次性检定"
+        ],
+        "priority": 91
+      },
+      {
+        "canonical": "被动检定",
+        "aliases": [
+          "Passive Check",
+          "黑色检定"
+        ],
+        "priority": 90
+      },
+      {
+        "canonical": "费尔韦瑟 T-500",
+        "aliases": [
+          "Fairweather T-500",
+          "T-500",
+          "搪瓷装甲",
+          "陶瓷装甲"
+        ],
+        "priority": 89
+      },
+      {
+        "canonical": "Call Me Mañana",
+        "aliases": [
+          "Mañana",
+          "Call Me Manana",
+          "马列拉",
+          "马尼亚"
+        ],
+        "priority": 77
+      },
+      {
+        "canonical": "盖里",
+        "aliases": [
+          "Gary",
+          "Gary the Cryptofascist",
+          "密码法西斯主义者盖里"
+        ],
+        "priority": 78
+      },
+      {
+        "canonical": "骷髅头辛迪",
+        "aliases": [
+          "Cindy the SKULL",
+          "Cindy",
+          "辛迪"
+        ],
+        "priority": 77
+      },
+      {
+        "canonical": "莉莉恩",
+        "aliases": [
+          "Lilienne",
+          "Lilienne Carter"
+        ],
+        "priority": 75
+      },
+      {
+        "canonical": "小莉莉",
+        "aliases": [
+          "Little Lily",
+          "Lily"
+        ],
+        "priority": 75
+      },
+      {
+        "canonical": "Gorący Kubek",
+        "aliases": [
+          "Goracy Kubek",
+          "厨房伙夫",
+          "旅社厨师"
+        ],
+        "priority": 74
+      },
+      {
+        "canonical": "黄色园艺手套",
+        "aliases": [
+          "Yellow Gardening Gloves",
+          "园丁手套",
+          "园艺手套"
+        ],
+        "priority": 76
+      },
+      {
+        "canonical": "FALN Pipo 帽",
+        "aliases": [
+          "FALN Pipo",
+          "FALN Pipo Pipo",
+          "FALN 帽"
+        ],
+        "priority": 76
+      },
+      {
+        "canonical": "雷亚尔",
+        "aliases": [
+          "reál",
+          "Real",
+          "跨洲雷亚尔"
+        ],
+        "priority": 79
+      }
+    ]
+  }
+}

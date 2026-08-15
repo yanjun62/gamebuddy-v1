@@ -11,6 +11,7 @@ const QUEUE_FILE = path.join(ROOT, "message_queue.jsonl");
 const DANMAKU_FILE = path.join(ROOT, "danmaku.txt");
 const FRAME_FILE = path.join(ROOT, "current_frame.jpg");
 const STATE_FILE = path.join(ROOT, ".direct_codex_state.json");
+const HEARTBEAT_STATE_FILE = path.join(ROOT, ".heartbeat_state.json");
 const STATUS_FILE = path.join(ROOT, "direct_codex_status.json");
 
 let config = {};
@@ -42,6 +43,20 @@ function atomicWrite(file, contents) {
 function saveState() {
   state.processedMessageIds = [...new Set(state.processedMessageIds)].slice(-10000);
   atomicWrite(STATE_FILE, `${JSON.stringify(state, null, 2)}\n`);
+}
+
+function bootstrapProcessedMessages() {
+  const heartbeat = readJson(HEARTBEAT_STATE_FILE, {});
+  const inherited = Array.isArray(heartbeat.processed_message_ids)
+    ? heartbeat.processed_message_ids.filter((id) => typeof id === "string")
+    : [];
+  const pendingMessages = Array.isArray(heartbeat.pending?.messages) ? heartbeat.pending.messages : [];
+  for (const message of pendingMessages) {
+    if (typeof message?.id === "string") inherited.push(message.id);
+  }
+  state.processedMessageIds = [...new Set([...state.processedMessageIds, ...inherited])];
+  state.bootstrappedFromHeartbeatAt = new Date().toISOString();
+  saveState();
 }
 
 function writeStatus(status, extra = {}) {
@@ -168,7 +183,7 @@ function markRetry(message, reason) {
   state.inFlight = null;
   active = null;
   saveState();
-  writeStatus("error", { error: reason, retryInMs: delay, messageId: message.id });
+  writeStatus("retrying", { error: reason, retryInMs: delay, messageId: message.id });
 }
 
 function completeTurn(turn) {
@@ -200,12 +215,80 @@ function freshFrameInput() {
   return null;
 }
 
+function captureFrameOnMessage() {
+  if (config.capture_on_message === false) return Promise.resolve(false);
+  const configuredPython = String(config.capture_python_executable || "").trim();
+  const venvPython = process.platform === "win32"
+    ? path.join(ROOT, ".venv", "Scripts", "python.exe")
+    : path.join(ROOT, ".venv", "bin", "python");
+  const executable = configuredPython
+    || (fs.existsSync(venvPython) ? venvPython : (process.platform === "win32" ? "python" : "python3"));
+  const script = path.join(ROOT, "capture_once.py");
+  return new Promise((resolve) => {
+    let settled = false;
+    const child = spawn(executable, [script], {
+      cwd: ROOT,
+      windowsHide: true,
+      stdio: "ignore",
+    });
+    const finish = (success) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(success);
+    };
+    const timer = setTimeout(() => {
+      child.kill();
+      finish(false);
+    }, Number(config.capture_on_message_timeout_ms || 5000));
+    child.once("error", () => finish(false));
+    child.once("exit", (code) => finish(code === 0));
+  });
+}
+
+function formatGameContext(context) {
+  if (!context || typeof context !== "object") return "";
+  const game = String(context.display_name || context.profile_id || "未指定游戏");
+  const mode = String(context.spoiler_mode || "safe");
+  const modeRules = {
+    safe: "安全模式：只谈画面可见或玩家已提供的信息，不透露后续角色、凶手、死亡、结局或隐藏后果。",
+    "current-game": "当前进度攻略：可讲玩家已经到达的内容；隐藏后续章节、跨作继承结果和未触发的永久后果。",
+    full: "完整剧透攻略：玩家已在菜单中明确授权，可回答隐藏结局、凶手、死亡与长期后果。",
+  };
+  const lines = ["[Game Buddy 本地设置]", `游戏：${game}`, modeRules[mode] || modeRules.safe];
+  if (context.knowledge_enabled) {
+    lines.push("词库：开启。只按当前问题检索少量相关条目，禁止一次加载完整术语库。");
+    if (context.profile_path) lines.push(`游戏档案：${context.profile_path}`);
+    if (context.reference_path) lines.push(`攻略与世界书：${context.reference_path}`);
+    const terms = Array.isArray(context.terms) ? context.terms.slice(0, 30) : [];
+    if (terms.length) {
+      lines.push(
+        "当前相关术语：" +
+          terms
+            .map((term) => {
+              const aliases = Array.isArray(term.aliases) ? term.aliases.slice(0, 3).join(" / ") : "";
+              return aliases ? `${term.canonical} (${aliases})` : String(term.canonical || "");
+            })
+            .filter(Boolean)
+            .join("；"),
+      );
+    }
+    lines.push("需要精确信息时，只可按需读取上述本地档案/攻略或使用 Game Buddy lookup；不得修改文件。");
+  } else {
+    lines.push("词库：关闭。不要读取或引用游戏专属世界书、攻略和术语库。");
+  }
+  return lines.join("\n");
+}
+
 async function sendNextMessage(message) {
   const prefix = String(
     config.direct_codex_prompt_prefix ||
-      "你正在作为 Game Buddy 陪玩家聊天。请结合已有上下文和可选游戏截图，用简短自然的中文直接回复；不要执行工具或修改文件。",
+      "这是由 Game Buddy 转发的玩家消息。请保持当前任务中已有的人格、称呼、语气、关系设定与表达习惯；Game Buddy 只提供游戏上下文和剧透边界，不创建或替换人格。如果当前代理已经加载人格或项目指令文件（例如 Claude Code 的 CLAUDE.md、Codex 的 AGENTS.md），请继续遵守；无需仅因本提示而查找这些文件。回复应适合悬浮气泡阅读，但用户已有的交流风格优先。只可按需读取所选本地词库，不得修改文件或执行其他操作。",
   ).trim();
-  const input = [{ type: "text", text: prefix ? `${prefix}\n\n玩家：${message.text.trim()}` : message.text.trim() }];
+  const gameContext = formatGameContext(message.game_context);
+  const text = [prefix, gameContext, `玩家：${message.text.trim()}`].filter(Boolean).join("\n\n");
+  const input = [{ type: "text", text }];
+  await captureFrameOnMessage();
   const frame = freshFrameInput();
   if (frame) input.push(frame);
 
@@ -371,9 +454,13 @@ function shutdown() {
 
 function main() {
   config = readJson(CONFIG_FILE, {});
+  const stateFileExisted = fs.existsSync(STATE_FILE);
   state = { ...state, ...readJson(STATE_FILE, {}) };
   state.processedMessageIds = Array.isArray(state.processedMessageIds) ? state.processedMessageIds : [];
   state.retries = state.retries && typeof state.retries === "object" ? state.retries : {};
+  if (!stateFileExisted || (!state.threadId && !state.inFlight && state.processedMessageIds.length === 0)) {
+    bootstrapProcessedMessages();
+  }
   validateConfig();
   maybeSpawnServer();
   connect();

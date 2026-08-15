@@ -1,0 +1,4 @@
+interface:
+  display_name: "游戏攻略制作"
+  short_description: "制作有来源、可控剧透、可维护且可发布的游戏攻略资料包"
+  default_prompt: "Use $game-guide-authoring to create a spoiler-aware, sourced game guide package."

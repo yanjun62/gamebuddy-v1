@@ -1,0 +1,40 @@
+{
+  "name": "gamebuddy",
+  "version": "0.1.0",
+  "description": "Local-first, spoiler-aware game guidance and a safe MCP bridge for the Game Buddy desktop overlay.",
+  "author": {
+    "name": "yanjun62 and GameBuddy contributors"
+  },
+  "homepage": "https://github.com/yanjun62/gamebuddy-v1",
+  "repository": "https://github.com/yanjun62/gamebuddy-v1",
+  "license": "MIT",
+  "keywords": [
+    "games",
+    "game-guide",
+    "spoiler-aware",
+    "mcp",
+    "local-first"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Game Buddy",
+    "shortDescription": "Spoiler-aware game help with a local overlay bridge.",
+    "longDescription": "Loads compact public game profiles, searches terminology on demand, enforces spoiler levels, and can connect to a local Game Buddy desktop overlay without uploading its private files.",
+    "developerName": "yanjun62 and GameBuddy contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "Local MCP tools",
+      "Spoiler-aware worldbooks",
+      "Terminology search",
+      "Game guide authoring kit",
+      "Game Buddy overlay bridge"
+    ],
+    "defaultPrompt": [
+      "Use Game Buddy to help with my current game without spoilers.",
+      "List the game profiles available in Game Buddy.",
+      "Check whether my local Game Buddy overlay has a new event."
+    ],
+    "brandColor": "#52B7D8"
+  },
+  "mcpServers": "./.mcp.json"
+}

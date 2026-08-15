@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gamebuddy": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PROJECT_DIR:-.}/plugins/gamebuddy/scripts/gamebuddy_mcp_server.js"
+      ],
+      "env": {}
+    }
+  }
+}

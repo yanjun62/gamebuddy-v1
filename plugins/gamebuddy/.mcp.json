@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "gamebuddy": {
+      "command": "node",
+      "args": [
+        "./scripts/gamebuddy_mcp_server.js"
+      ],
+      "cwd": ".",
+      "env_vars": [
+        "GAMEBUDDY_HOME",
+        "GAMEBUDDY_PYTHON"
+      ]
+    }
+  }
+}

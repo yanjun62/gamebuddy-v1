@@ -1,0 +1,53 @@
+name: Game Buddy MCP compatibility
+
+on:
+  push:
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - ".mcp.json"
+      - "mcp/**"
+      - "plugins/gamebuddy/**"
+      - "package.json"
+      - ".github/workflows/gamebuddy-mcp.yml"
+  pull_request:
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - ".mcp.json"
+      - "mcp/**"
+      - "plugins/gamebuddy/**"
+      - "package.json"
+      - ".github/workflows/gamebuddy-mcp.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  stdio-mcp:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check JavaScript entrypoints
+        run: npm run check
+
+      - name: Run MCP protocol, bridge, spoiler, and privacy tests
+        run: npm run test:mcp
+
+      - name: Verify the GitHub npx package allowlist
+        run: npm pack --dry-run

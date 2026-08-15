@@ -1,0 +1,13 @@
+{
+  "name": "gamebuddy-mcp-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "description": "Dependency-free local MCP server bundled with the Game Buddy Codex plugin.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node tests/mcp_smoke_test.js"
+  }
+}

@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 import json
 from screen_capture import capture_region, find_game_window as find_configured_window
+from game_knowledge import correct_ocr_text
 
 CONFIG_DIR = Path(__file__).parent
 DESC_FILE = CONFIG_DIR / "description.txt"
@@ -31,8 +32,11 @@ def ocr_text(image_array, reader):
     return "\n".join(results) if results else ""
 
 
-def format_output(raw_text):
+def format_output(raw_text, config=None):
     """把 OCR 原始输出整理成可读格式"""
+    corrections = []
+    if config:
+        raw_text, corrections = correct_ocr_text(raw_text, config)
     lines = raw_text.strip().split("\n")
     # 去重去空白
     seen = set()
@@ -48,6 +52,9 @@ def format_output(raw_text):
 
     out = "【OCR 提取文字】\n"
     out += "\n".join(clean)
+    if corrections:
+        out += "\n\n【词库校对】\n"
+        out += "\n".join(f"{item['from']} → {item['to']}" for item in corrections[:10])
     out += "\n\n（写完弹幕到 danmaku.txt）"
     return out
 
@@ -88,7 +95,7 @@ def main():
         arr, raw = capture_screen(region)
         print("🔍 OCR 识别中...")
         text = ocr_text(arr, reader)
-        output = format_output(text)
+        output = format_output(text, cfg)
         DESC_FILE.write_text(output, encoding='utf-8')
         print(f"✅ → {DESC_FILE}")
         print(f"\n{output[:500]}")
@@ -112,7 +119,7 @@ def main():
                 continue
             arr, raw = capture_screen(region)
             text = ocr_text(arr, reader)
-            output = format_output(text)
+            output = format_output(text, cfg)
 
             if text == last_text:
                 time.sleep(INTERVAL)

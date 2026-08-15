@@ -1,6 +1,12 @@
 # GameBuddy 本地使用与维护
 
-## 已验证的工作模式
+## 推荐模式：直连时按消息截图
+
+启用 `direct_codex_enabled: true` 与 `capture_on_message: true` 后，只需要启动聊天气泡。玩家发送文字或语音消息时，直连桥会先调用 `capture_once.py` 截取一张目标游戏窗口，再把新鲜画面附给 Codex；玩家不说话时不会定时截图。Windows 会优先使用项目 `.venv\Scripts\python.exe`，找不到时回退到 PATH 中的 `python`。
+
+`game_window_title` 为空、窗口未找到或窗口已最小化时都会安全跳过，不会回退到桌面截图。
+
+## 心跳兼容模式
 
 2026-07-18 已用 *Sultan's Game* 完整验证以下链路：
 
@@ -31,7 +37,7 @@ Copy-Item .\config.example.json .\config.json
 .\.venv\Scripts\python.exe .\overlay_launcher.py --check
 ```
 
-## 启动顺序
+## 启动顺序（心跳兼容模式）
 
 1. 先启动游戏，并让窗口标题与 `game_window_title` 匹配。
 2. 启动截图进程。调试时建议在可见终端运行，确认每 10 秒出现一条 `[Snap]`：
@@ -53,7 +59,7 @@ Copy-Item .\config.example.json .\config.json
 
 - 文字：在 Game Buddy 底部输入框输入并回车，状态栏出现“消息已进入可靠队列”。
 - 语音：点麦克风，等待本地模型转写；文字会先填入输入框，确认或修改后再回车发送。
-- 画面：截图进程只抓匹配到的目标游戏窗口；找不到窗口时会跳过，不会退回桌面截图。
+- 画面：直连模式在每次发送消息时截一张；心跳模式由截图进程周期抓取。两者都只抓匹配到的目标游戏窗口，找不到时会跳过，不会退回桌面截图。
 - 回复：主 heartbeat 会按时间读取三帧并发送 2–3 行；第一次提交后的额外 poll 只负责排空被 pending 挡住的消息，截图-only 事件会静默提交。
 
 ## 正确停止
