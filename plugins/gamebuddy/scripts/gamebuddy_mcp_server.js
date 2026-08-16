@@ -99,10 +99,17 @@ function readText(filePath, maximumBytes = 2 * 1024 * 1024) {
     if (!stat.isFile() || stat.size > maximumBytes) {
       return "";
     }
-    return fs.readFileSync(filePath, "utf8");
+    return fs.readFileSync(filePath, "utf8").replace(/\r\n?/g, "\n");
   } catch {
     return "";
   }
+}
+
+function canonicalRealPath(candidate) {
+  const resolved = path.resolve(String(candidate));
+  return typeof fs.realpathSync.native === "function"
+    ? fs.realpathSync.native(resolved)
+    : fs.realpathSync(resolved);
 }
 
 function canonicalDirectory(candidate) {
@@ -110,7 +117,7 @@ function canonicalDirectory(candidate) {
     return null;
   }
   try {
-    const resolved = fs.realpathSync(path.resolve(String(candidate)));
+    const resolved = canonicalRealPath(candidate);
     return fs.statSync(resolved).isDirectory() ? resolved : null;
   } catch {
     return null;
@@ -202,8 +209,28 @@ function resolveConfiguredPath(home, value) {
     : path.resolve(home, expanded);
 }
 
+function comparablePath(value) {
+  let resolved = path.resolve(String(value || ""));
+  if (process.platform !== "win32") {
+    return resolved;
+  }
+
+  // Windows may return the same real path with or without an extended-length
+  // prefix. Convert both forms before the containment check; never skip the
+  // realpath-based boundary itself.
+  if (resolved.startsWith("\\\\?\\UNC\\")) {
+    resolved = "\\\\" + resolved.slice(8);
+  } else if (resolved.startsWith("\\\\?\\")) {
+    resolved = resolved.slice(4);
+  }
+  return resolved.toLowerCase();
+}
+
 function isInside(root, candidate) {
-  const relative = path.relative(root, candidate);
+  const relative = path.relative(
+    comparablePath(root),
+    comparablePath(candidate)
+  );
   return relative === "" ||
     (!relative.startsWith(".." + path.sep) &&
       relative !== ".." &&
@@ -382,7 +409,7 @@ function safeLinkedFile(root, relativePath) {
     return null;
   }
   try {
-    const real = fs.realpathSync(candidate);
+    const real = canonicalRealPath(candidate);
     return isInside(rootReal, real) && fs.statSync(real).isFile()
       ? real
       : null;
@@ -1069,7 +1096,11 @@ function invokeHeartbeat(home, bridgeArguments) {
         timeout: 30000,
         maxBuffer: MAX_JSON_BYTES,
         windowsHide: true,
-        env: process.env
+        env: {
+          ...process.env,
+          PYTHONIOENCODING: "utf-8",
+          PYTHONUTF8: "1"
+        }
       }
     );
     if (result.error && result.error.code === "ENOENT") {
@@ -1179,22 +1210,38 @@ function frameContent(home, payload) {
   const blocks = [];
   let totalBytes = 0;
   let omitted = 0;
+  const omittedReasons = {};
+  const omit = (reason) => {
+    omitted += 1;
+    omittedReasons[reason] = Number(omittedReasons[reason] || 0) + 1;
+  };
   const homeReal = canonicalDirectory(home);
   if (!homeReal) {
-    return { blocks, omitted: selected.length };
+    return {
+      blocks,
+      omitted: selected.length,
+      omittedReasons: { invalid_gamebuddy_home: selected.length }
+    };
   }
 
   for (const rawPath of selected) {
     try {
-      const real = fs.realpathSync(String(rawPath));
+      const real = canonicalRealPath(rawPath);
       const stat = fs.statSync(real);
-      if (
-        !isInside(homeReal, real) ||
-        !stat.isFile() ||
-        stat.size > MAX_FRAME_BYTES ||
-        totalBytes + stat.size > MAX_TOTAL_FRAME_BYTES
-      ) {
-        omitted += 1;
+      if (!isInside(homeReal, real)) {
+        omit("outside_gamebuddy_home");
+        continue;
+      }
+      if (!stat.isFile()) {
+        omit("not_a_file");
+        continue;
+      }
+      if (stat.size > MAX_FRAME_BYTES) {
+        omit("frame_too_large");
+        continue;
+      }
+      if (totalBytes + stat.size > MAX_TOTAL_FRAME_BYTES) {
+        omit("total_frame_limit");
         continue;
       }
       const data = fs.readFileSync(real).toString("base64");
@@ -1205,10 +1252,10 @@ function frameContent(home, payload) {
         mimeType: mimeTypeForFrame(real)
       });
     } catch {
-      omitted += 1;
+      omit("unreadable");
     }
   }
-  return { blocks, omitted };
+  return { blocks, omitted, omittedReasons };
 }
 
 function pollOverlay(argumentsObject) {
@@ -1223,6 +1270,7 @@ function pollOverlay(argumentsObject) {
   const frames = frameContent(connection.path, payload);
   if (frames.omitted) {
     sanitized.omitted_frame_count = frames.omitted;
+    sanitized.omitted_frame_reasons = frames.omittedReasons;
   }
   return { data: sanitized, extraContent: frames.blocks };
 }

@@ -5,7 +5,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "github:yanjun62/gamebuddy-v1#master"
+        "github:yanjun62/gamebuddy-v2#master"
       ]
     }
   }

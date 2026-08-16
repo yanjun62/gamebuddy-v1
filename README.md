@@ -59,14 +59,14 @@ OCR 模式会用相同词库保守校对独立的人名、地点或缩写；模�
 
 ~~~text
 # Codex 插件
-codex plugin marketplace add yanjun62/gamebuddy-v1 --ref master
+codex plugin marketplace add yanjun62/gamebuddy-v2 --ref master
 codex plugin add gamebuddy@gamebuddy-open-source
 
 # Claude Code
-claude mcp add --transport stdio --scope user gamebuddy -- npx -y github:yanjun62/gamebuddy-v1#master
+claude mcp add --transport stdio --scope user gamebuddy -- npx -y github:yanjun62/gamebuddy-v2#master
 
 # 任意支持 stdio MCP 的客户端
-npx -y github:yanjun62/gamebuddy-v1#master
+npx -y github:yanjun62/gamebuddy-v2#master
 ~~~
 
 WorkBuddy 可在“连接器 → 自定义连接器”直接粘贴 [mcp/configs/workbuddy.json](mcp/configs/workbuddy.json)。这个 GitHub 入口只包含代码、公开的精简词库和来源说明，不包含本机完整攻略词库、聊天、截图、配置、模型或个人路径。

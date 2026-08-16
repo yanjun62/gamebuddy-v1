@@ -7,7 +7,7 @@ This plugin adds spoiler-aware Game Buddy guidance and a dependency-free local M
 After this repository is published, run:
 
 ~~~text
-codex plugin marketplace add yanjun62/gamebuddy-v1 --ref master
+codex plugin marketplace add yanjun62/gamebuddy-v2 --ref master
 codex plugin add gamebuddy@gamebuddy-open-source
 ~~~
 
@@ -29,14 +29,14 @@ The MCP server automatically connects when Codex is running from a Game Buddy ch
 macOS or Linux:
 
 ~~~text
-export GAMEBUDDY_HOME="/path/to/gamebuddy-v1"
+export GAMEBUDDY_HOME="/path/to/gamebuddy-v2"
 codex
 ~~~
 
 Windows PowerShell:
 
 ~~~text
-$env:GAMEBUDDY_HOME = "C:\\path\\to\\gamebuddy-v1"
+$env:GAMEBUDDY_HOME = "C:\\path\\to\\gamebuddy-v2"
 codex
 ~~~
 
