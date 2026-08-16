@@ -99,7 +99,7 @@ function readText(filePath, maximumBytes = 2 * 1024 * 1024) {
     if (!stat.isFile() || stat.size > maximumBytes) {
       return "";
     }
-    return fs.readFileSync(filePath, "utf8");
+    return fs.readFileSync(filePath, "utf8").replace(/\r\n?/g, "\n");
   } catch {
     return "";
   }

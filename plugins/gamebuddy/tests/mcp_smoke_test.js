@@ -133,10 +133,34 @@ function makeFixture() {
   const root = fs.mkdtempSync(
     path.join(os.tmpdir(), "gamebuddy-mcp-test-")
   );
+  const skillRoot = path.join(root, "local-skill");
+  const profileRoot = path.join(skillRoot, "assets", "game-profiles");
+  const referenceRoot = path.join(skillRoot, "references", "games");
+  fs.mkdirSync(profileRoot, { recursive: true });
+  fs.mkdirSync(referenceRoot, { recursive: true });
+  fs.writeFileSync(path.join(skillRoot, "SKILL.md"), "# Test skill\n");
+  writeJson(path.join(profileRoot, "crlf-worldbook.json"), {
+    schema_version: 1,
+    id: "crlf-worldbook",
+    display_name: "CRLF Worldbook",
+    aliases: [],
+    reference: "references/games/crlf-worldbook.md",
+    stt: { terms: [] }
+  });
+  const crlfWorldbook = Array.from(
+    { length: 600 },
+    () => "x".repeat(39)
+  ).join("\r\n");
+  assert.equal(crlfWorldbook.length, 24598);
+  fs.writeFileSync(
+    path.join(referenceRoot, "crlf-worldbook.md"),
+    crlfWorldbook
+  );
   fs.writeFileSync(path.join(root, "bridge_protocol.py"), "");
   fs.writeFileSync(path.join(root, "config.example.json"), "{}\n");
   writeJson(path.join(root, "config.json"), {
     game_profile: "disco-elysium",
+    game_profile_root: profileRoot,
     knowledge_enabled: true,
     spoiler_mode: "safe",
     capture_on_message: true,
@@ -459,6 +483,19 @@ async function main() {
     assert.equal(status.result.structuredContent.connected, true);
     assert.equal(status.result.structuredContent.bridge.queued_messages, 2);
     assert(!JSON.stringify(status.result).includes(fixture));
+
+    const crlfContext = await client.call("gamebuddy_get_context", {
+      gamebuddy_home: fixture,
+      profile_id: "crlf-worldbook",
+      spoiler_mode: "full"
+    });
+    const crlfText = crlfContext.result.structuredContent.worldbook;
+    assert.equal(
+      crlfContext.result.structuredContent.worldbook_truncated,
+      false
+    );
+    assert.equal(crlfText.length, 23999);
+    assert(!crlfText.includes("\r"));
 
     const poll = await client.call(
       "gamebuddy_poll",
