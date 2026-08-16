@@ -1183,22 +1183,38 @@ function frameContent(home, payload) {
   const blocks = [];
   let totalBytes = 0;
   let omitted = 0;
+  const omittedReasons = {};
+  const omit = (reason) => {
+    omitted += 1;
+    omittedReasons[reason] = Number(omittedReasons[reason] || 0) + 1;
+  };
   const homeReal = canonicalDirectory(home);
   if (!homeReal) {
-    return { blocks, omitted: selected.length };
+    return {
+      blocks,
+      omitted: selected.length,
+      omittedReasons: { invalid_gamebuddy_home: selected.length }
+    };
   }
 
   for (const rawPath of selected) {
     try {
       const real = fs.realpathSync(String(rawPath));
       const stat = fs.statSync(real);
-      if (
-        !isInside(homeReal, real) ||
-        !stat.isFile() ||
-        stat.size > MAX_FRAME_BYTES ||
-        totalBytes + stat.size > MAX_TOTAL_FRAME_BYTES
-      ) {
-        omitted += 1;
+      if (!isInside(homeReal, real)) {
+        omit("outside_gamebuddy_home");
+        continue;
+      }
+      if (!stat.isFile()) {
+        omit("not_a_file");
+        continue;
+      }
+      if (stat.size > MAX_FRAME_BYTES) {
+        omit("frame_too_large");
+        continue;
+      }
+      if (totalBytes + stat.size > MAX_TOTAL_FRAME_BYTES) {
+        omit("total_frame_limit");
         continue;
       }
       const data = fs.readFileSync(real).toString("base64");
@@ -1209,10 +1225,10 @@ function frameContent(home, payload) {
         mimeType: mimeTypeForFrame(real)
       });
     } catch {
-      omitted += 1;
+      omit("unreadable");
     }
   }
-  return { blocks, omitted };
+  return { blocks, omitted, omittedReasons };
 }
 
 function pollOverlay(argumentsObject) {
@@ -1227,6 +1243,7 @@ function pollOverlay(argumentsObject) {
   const frames = frameContent(connection.path, payload);
   if (frames.omitted) {
     sanitized.omitted_frame_count = frames.omitted;
+    sanitized.omitted_frame_reasons = frames.omittedReasons;
   }
   return { data: sanitized, extraContent: frames.blocks };
 }
