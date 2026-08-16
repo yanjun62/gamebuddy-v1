@@ -505,7 +505,8 @@ async function main() {
     assert.equal(poll.result.resultType, "complete");
     assert.equal(poll.result.structuredContent.token, "test-token");
     assert(
-      poll.result.content.some((item) => item.type === "image")
+      poll.result.content.some((item) => item.type === "image"),
+      "poll did not attach frame: " + JSON.stringify(poll.result)
     );
     assert(!JSON.stringify(poll.result).includes(fixture));
     assert(
