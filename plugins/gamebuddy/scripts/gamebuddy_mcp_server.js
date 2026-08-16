@@ -105,12 +105,19 @@ function readText(filePath, maximumBytes = 2 * 1024 * 1024) {
   }
 }
 
+function canonicalRealPath(candidate) {
+  const resolved = path.resolve(String(candidate));
+  return typeof fs.realpathSync.native === "function"
+    ? fs.realpathSync.native(resolved)
+    : fs.realpathSync(resolved);
+}
+
 function canonicalDirectory(candidate) {
   if (!candidate) {
     return null;
   }
   try {
-    const resolved = fs.realpathSync(path.resolve(String(candidate)));
+    const resolved = canonicalRealPath(candidate);
     return fs.statSync(resolved).isDirectory() ? resolved : null;
   } catch {
     return null;
@@ -402,7 +409,7 @@ function safeLinkedFile(root, relativePath) {
     return null;
   }
   try {
-    const real = fs.realpathSync(candidate);
+    const real = canonicalRealPath(candidate);
     return isInside(rootReal, real) && fs.statSync(real).isFile()
       ? real
       : null;
@@ -1219,7 +1226,7 @@ function frameContent(home, payload) {
 
   for (const rawPath of selected) {
     try {
-      const real = fs.realpathSync(String(rawPath));
+      const real = canonicalRealPath(rawPath);
       const stat = fs.statSync(real);
       if (!isInside(homeReal, real)) {
         omit("outside_gamebuddy_home");
