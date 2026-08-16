@@ -1069,7 +1069,11 @@ function invokeHeartbeat(home, bridgeArguments) {
         timeout: 30000,
         maxBuffer: MAX_JSON_BYTES,
         windowsHide: true,
-        env: process.env
+        env: {
+          ...process.env,
+          PYTHONIOENCODING: "utf-8",
+          PYTHONUTF8: "1"
+        }
       }
     );
     if (result.error && result.error.code === "ENOENT") {
