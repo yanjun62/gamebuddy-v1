@@ -202,8 +202,28 @@ function resolveConfiguredPath(home, value) {
     : path.resolve(home, expanded);
 }
 
+function comparablePath(value) {
+  let resolved = path.resolve(String(value || ""));
+  if (process.platform !== "win32") {
+    return resolved;
+  }
+
+  // Windows may return the same real path with or without an extended-length
+  // prefix. Convert both forms before the containment check; never skip the
+  // realpath-based boundary itself.
+  if (resolved.startsWith("\\\\?\\UNC\\")) {
+    resolved = "\\\\" + resolved.slice(8);
+  } else if (resolved.startsWith("\\\\?\\")) {
+    resolved = resolved.slice(4);
+  }
+  return resolved.toLowerCase();
+}
+
 function isInside(root, candidate) {
-  const relative = path.relative(root, candidate);
+  const relative = path.relative(
+    comparablePath(root),
+    comparablePath(candidate)
+  );
   return relative === "" ||
     (!relative.startsWith(".." + path.sep) &&
       relative !== ".." &&
