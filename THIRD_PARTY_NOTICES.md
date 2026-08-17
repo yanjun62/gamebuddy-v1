@@ -2,6 +2,15 @@
 
 The GameBuddy runtime code and original project documentation in this archive are available under the included GNU Affero General Public License version 3 (`AGPL-3.0-only`), except where a file states otherwise. Game titles, characters, trademarks, localization choices, and source materials remain the property of their respective rightsholders; this archive is unofficial and is not a game localization, Wiki mirror, or game-asset distribution.
 
+## Project contributors
+
+Project contributor credits are separate from the third-party attributions below.
+
+- [yanjun62](https://github.com/yanjun62) — project creator and maintainer.
+- [Liooowei](https://github.com/Liooowei) — contributed to the local voice-input implementation and terminology-integration support.
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the project copyright notice and licensing scope.
+
 ## Bundled game guides
 
 The Disco Elysium guide is a spoiler-aware, source-attributed synthesis. It includes no game dialogue, subtitles, screenshots, maps, save files, or extracted game bundles. Its sources and confidence limits are recorded in `skills/game-buddy/references/credits.md` and the guide itself.
