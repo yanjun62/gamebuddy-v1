@@ -133,6 +133,13 @@ python heartbeat_bridge.py commit --token <poll 返回的 token> --silent
 
 完整的本地启动、停止、验收与故障恢复步骤见 [OPERATIONS.md](OPERATIONS.md)；Codex 定时消费者的强制流程见 [CODEX_HEARTBEAT_RUNBOOK.md](CODEX_HEARTBEAT_RUNBOOK.md)。
 
+## 项目贡献者
+
+- [yanjun62](https://github.com/yanjun62) — 项目发起与维护。
+- [Liooowei](https://github.com/Liooowei) — 参与本地语音输入实现与术语接入支持。
+
+完整版权署名与许可范围见 [CONTRIBUTORS.md](CONTRIBUTORS.md)；游戏作者、汉化团队、Wiki 与攻略来源继续单独记录在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
 ## 开源许可证
 
 Game Buddy 自有代码与原创项目文档采用 [GNU Affero General Public License v3.0](LICENSE)，SPDX 标识为 `AGPL-3.0-only`。如果你修改本项目并通过网络向用户提供服务，AGPL 第 13 条要求向这些用户提供对应版本的完整源代码。游戏名称、商标、社区资料和其他第三方内容仍归各自权利人所有，不因本项目许可证而被重新授权；详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
