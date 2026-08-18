@@ -136,3 +136,9 @@ python heartbeat_bridge.py commit --token <poll 返回的 token> --silent
 ## 开源许可证
 
 Game Buddy 自有代码与原创项目文档采用 [GNU Affero General Public License v3.0](LICENSE)，SPDX 标识为 `AGPL-3.0-only`。如果你修改本项目并通过网络向用户提供服务，AGPL 第 13 条要求向这些用户提供对应版本的完整源代码。游戏名称、商标、社区资料和其他第三方内容仍归各自权利人所有，不因本项目许可证而被重新授权；详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
+## 许可协议
+
+本项目代码与原创文档采用 [GNU Affero General Public License v3.0](LICENSE)（`AGPL-3.0-only`）。据其第 13 条，任何经修改后**通过网络提供给用户**的版本，都必须向这些用户提供对应的完整源码。
+
+游戏标题、角色、商标、本地化文本与攻略来源的权利归各自权利人所有；本项目为非官方工具，不是游戏本地化、Wiki 镜像或游戏资源分发。第三方来源与致谢见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
